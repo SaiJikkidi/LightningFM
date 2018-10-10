@@ -1,0 +1,47 @@
+<aura:component access="global"
+                controller="LookupController">
+    <aura:attribute name='tagForm' type='Boolean'/>
+    <aura:attribute name='mode' type='String' default='All'/>
+    <aura:attribute name='popUp' type='Boolean'/>
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    <aura:attribute name='items' type='Object'/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />  
+    <aura:attribute name="SelectedRecordTemplate" type="Object" default="null" description="Use,for store SELECTED sObject Record" />
+    <aura:handler name="change" value="{!v.SelectedRecordTemplate}" action="{!c.handleSelection}"/>
+    
+    
+    <lightning:layout multipleRows="true">
+        <!--  <h1 class="slds-page-header__title slds-align-middle">Apply Tag Templates </h1> -->
+        <aura:if isTrue="{!v.mode=='All' }">
+            
+            <p class="slds-m-bottom_x-small">    <lightning:icon iconName="utility:insert_template" size="x-small" alternativeText="insert_template" />
+                Apply Tag Templates</p>
+            <aura:set attribute="else">
+                <p class="slds-m-bottom_x-small">    <lightning:icon iconName="utility:insert_template" size="x-small" alternativeText="insert_template" />
+                    My Favorite Templates</p>
+            </aura:set>    
+        </aura:if>
+        <div class="slds-form-element">
+            <div class="slds-form-element__control">
+                <div class="slds-combobox_container slds-size_large">
+                    <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open" aria-expanded="true" aria-haspopup="listbox" role="combobox">
+                        <div id="listbox-unique-id" role="listbox">
+                            <ul class="slds-listbox slds-listbox_vertical slds-dropdown slds-dropdown_fluid" role="presentation">
+                            <ui:scrollerWrapper class="scrollerSize">
+                                    <aura:if isTrue="{! !empty(v.items)}">
+                                        <aura:iteration items="{!v.items}" var="singleTemplate">
+                                            <c:classificationsResults SelectedRecordTemplate='{!v.SelectedRecordTemplate}' oRecord="{!singleTemplate}" />
+                                        </aura:iteration>    
+                                        <aura:set attribute="else">
+                                            No Records created or available..
+                                        </aura:set>
+                                    </aura:if>
+                                </ui:scrollerWrapper> 
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </lightning:layout>
+</aura:component>

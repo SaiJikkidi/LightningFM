@@ -1,0 +1,5 @@
+<aura:component >
+    <lightning:overlayLibrary aura:id="overlayLib"/>
+     <aura:handler  event="c:EventCloseSearchMax" action="{!c.handleCancel}" />
+    <lightning:button name="cancel" label="Cancel" onclick="{!c.handleCancel}"/>
+</aura:component>

@@ -1,0 +1,57 @@
+<aura:component controller="getNavigationmenuData" implements="flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName" access="global">
+    
+    <aura:attribute name="navigationData" type="Object" description="The list of sections and their items." />
+    <aura:attribute name="initiallySelected" type="String" description="The name of the initially selected item." />
+    <aura:attribute name="NavItemSelected" type="String" description="The name of the initially selected item." />
+    
+    <aura:attribute name="items" type="list" description="The list of sections and their items." />
+    <aura:attribute name="objErrorHandler" type="String"/>
+    <aura:registerEvent name="EventForSearchParams" type="c:EventForSearchParams"/>
+    
+    <aura:attribute name="currentRecObj" type="Object" />
+    <aura:attribute name="record" type="Object" />
+    
+    <force:recordData aura:id="recordLoader"
+                      recordId="{!v.recordId}"
+                      fields="RecordTypeId,RecordType.Name,RecordType.DeveloperName"
+                      targetRecord="{!v.record}"                        
+                      targetFields="{!v.currentRecObj}"    
+                      mode ="VIEW"
+                      recordUpdated="{!c.recordUpdate}"
+                      targetError="{!v.objErrorHandler}"
+                      /> 
+    {!v.objErrorHandler}
+    
+    <aura:if isTrue="{!not(empty(v.currentRecObj))}">
+        <lightning:layout>
+            <lightning:layoutItem size ="2" class="slds-theme_shade slds-border_right">
+                <lightning:verticalNavigation compact="true"
+                                              shaded="true"
+                                              selectedItem="{!v.initiallySelected}"
+                                              onselect="{!c.handleSelectfromNavigationbar}"
+                                              class="navigation">
+                    <lightning:verticalNavigationSection label="File Filters">
+                        <aura:iteration items="{!v.items}" var="item">
+                            <aura:if isTrue="{! !empty(item.iconName)}">
+                                <lightning:verticalNavigationItemIcon label="{!item.label}"
+                                                                      name="{!item.name}"
+                                                                      iconName="{!item.iconName}" />
+                                <aura:set attribute="else">
+                                    <lightning:verticalNavigationItemIcon label="{!item.label}"
+                                                                          name="{!item.name}"
+                                                                          iconName="utility:filterList" />
+                                </aura:set>
+                            </aura:if>
+                        </aura:iteration>
+                    </lightning:verticalNavigationSection>
+                    
+                </lightning:verticalNavigation>
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-theme_default slds-no-space" flexibility="auto">
+                <c:searchResultDataTable recordId="{!v.recordId}"
+                                         sObjectNameInject="{!v.sObjectName}"/>
+            </lightning:layoutItem> 
+        </lightning:layout>
+        
+    </aura:if>
+</aura:component>

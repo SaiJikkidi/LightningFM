@@ -1,0 +1,48 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId" 
+                access="global">
+    <aura:attribute name="isOpen" type="boolean" default="false"/>
+    
+    <lightning:overlayLibrary aura:id="overlayLib"/>
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    
+    {!v.body}
+    <div class="c-container">
+        <lightning:layout multipleRows="true">
+            <lightning:layoutItem size="12" flexibility="no-grow">
+                <div class="slds-page-header">
+                    <div class="slds-grid">
+                        <div class="slds-col slds-has-flexi-truncate">
+                            <div class="slds-media slds-no-space slds-grow">
+                                <div class="slds-media__body">
+                                    <nav>
+                                        <ol class="slds-breadcrumb slds-line-height_reset">
+                                            <li class="slds-breadcrumb__item">
+                                                <span>Folder</span>
+                                            </li>
+                                        </ol>
+                                    </nav>
+                                    <h1 class="slds-page-header__title slds-m-right_small slds-align-middle slds-truncate" title="Files Home">Files Home</h1>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-no-flex slds-grid slds-align-top">
+                            <lightning:button name="modal" iconName="action:upload" iconPosition="left"  variant="brand" label="Add Files" onclick="{!c.handleShowModalwithFooter}"/>
+                        </div>
+                    </div>
+                </div>
+            </lightning:layoutItem>
+            <lightning:layoutItem  size="12" >
+                <lightning:layout  class="slds-theme_default">
+                    <lightning:layoutItem class="slds-border_right" >
+                        <ui:scrollerWrapper class="scrollerSize">
+                            <c:NavigationMenu/>
+                        </ui:scrollerWrapper>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem  class="slds-no-space" flexibility="auto" >
+                        <c:searchResultDataTable/>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </div>
+</aura:component>

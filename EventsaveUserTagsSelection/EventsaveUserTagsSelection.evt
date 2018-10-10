@@ -1,0 +1,7 @@
+<aura:event type="APPLICATION" description="This event is responsible saving all values that user has selected">
+    <aura:attribute name="userObjectSelection" type="sObject" description="saves user records selected for objects"/>
+    <aura:attribute name="userTagSelection" type="sObject" description="saves user records selected for tags"/>
+    <aura:attribute name="selectedConfig" type="sObject" description="saves user root folder selection"/>
+    <aura:attribute name="filterTagSelection" type="sObject" description="saves tag data selected by user in tagtreecomponent"/>
+    <aura:attribute name="templateSelection" type="sObject" description="saves Template data selected by user"/>
+</aura:event>

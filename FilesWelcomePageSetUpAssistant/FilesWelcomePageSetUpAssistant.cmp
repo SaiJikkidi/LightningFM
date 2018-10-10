@@ -1,0 +1,432 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" access="global" >
+    <aura:attribute name="showPostSteps" default="false" type="Boolean" />
+    <aura:attribute name="title" type="String" default="Post Installation Steps"/>
+    <aura:attribute name="url" type="String"/>
+        <aura:attribute name="activeSection" type="String" default="W"/>
+
+    <aura:attribute name="pageReference" type="Object"/>
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+   
+    <lightning:navigation aura:id="navService"/>
+        
+
+    <aura:if isTrue="{! !v.showPostSteps}">
+        
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-welcome-mat" aria-labelledby="welcome-mat-41-label" aria-describedby="welcome-mat-41-content" aria-modal="true">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header slds-modal__header_empty">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+                        <lightning:buttonIcon iconName="utility:close" onclick="{! c.handleClick }"  variant="bare-inverse" title="close" alternativeText="Close modal"/>
+                    </button>
+                </header>
+                <div class="slds-modal__content slds-welcome-mat__content slds-grid" id="welcome-mat-41-content">
+                    <div class="slds-welcome-mat__info slds-size_1-of-2">
+                        <div class="slds-welcome-mat__info-content">
+                            <br></br>
+                            <br></br>
+                            <h2 id="welcome-mat-41-label" class="slds-welcome-mat__info-title">Welcome to File Manager!</h2>
+                            <p class="slds-welcome-mat__info-description slds-text-longform">Relate,Categorize and Subcategorize Files!</p>
+                            
+                            <div class="slds-welcome-mat__info-progress slds-welcome-mat__info-progress_complete">
+                                <div class="slds-welcome-mat__info-badge-container">
+                                    <img src="{!$Resource.FileManager_Logo}" width="200" height="200"/> 
+                                </div>
+                                
+                            </div>
+                            <lightning:button variant="brand" label="Proceed to Post Installation Steps" title="Proceed to Post Installation Steps" onclick="{! c.handleClick }" />
+                        </div>
+                    </div>
+                    <div class="slds-welcome-mat__tiles slds-size_1-of-2 slds-p-around_medium">
+                        <a href="javascript:void(0);" onclick="{!c.navigatetoGuidedSetup}" class="slds-box slds-box_link slds-box_x-small slds-media slds-welcome-mat__tile">
+                            <div class="slds-media__figure slds-media__figure_fixed-width slds-align_absolute-center slds-m-left_xx-small">
+                                <div class="slds-welcome-mat__tile-icon-container">
+                                    <span class="slds-icon_container slds-icon-utility-animal_and_nature">
+                                        <lightning:icon iconName="utility:open_folder" alternativeText="Doc image" />
+                                    </span>
+                                    
+                                </div>
+                            </div>
+                            <div class="slds-media__body slds-border_left slds-p-around_small">
+                                
+                                <h3 class="slds-welcome-mat__tile-title">Create Folders</h3>
+                            </div>
+                        </a>
+                        <a href="javascript:void(0);"  onclick="{!c.navigatetoCreateTag}" class="slds-box slds-box_link slds-box_x-small slds-media slds-welcome-mat__tile">
+                            <div class="slds-media__figure slds-media__figure_fixed-width slds-align_absolute-center slds-m-left_xx-small">
+                                <div class="slds-welcome-mat__tile-icon-container">
+                                    <span class="slds-icon_container slds-icon-utility-call">
+                                        <lightning:icon iconName="utility:signpost" alternativeText="Doc image" />
+                                        
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="slds-media__body slds-border_left slds-p-around_small">
+                                <h3 class="slds-welcome-mat__tile-title">Create Tags</h3>
+                            </div>
+                        </a>
+                        <a href="{!v.url}" onclick="{!c.navigatetoGuidedSetup}" class="slds-box slds-box_link slds-box_x-small slds-media slds-welcome-mat__tile">
+                            <div class="slds-media__figure slds-media__figure_fixed-width slds-align_absolute-center slds-m-left_xx-small">
+                                <div class="slds-welcome-mat__tile-icon-container">
+                                    <span class="slds-icon_container slds-icon-utility-upload">
+                                        <lightning:icon iconName="utility:adduser" alternativeText="Doc image" />
+                                        
+                                    </span>
+                                    
+                                </div>
+                            </div>
+                            <div class="slds-media__body slds-border_left slds-p-around_small">
+                                <h3 class="slds-welcome-mat__tile-title">Add Folder members</h3>
+                            </div>
+                        </a>
+                        <a href="javascript:void(0);" onclick="{!c.navigatetoCreateFileFilters}" class="slds-box slds-box_link slds-box_x-small slds-media slds-welcome-mat__tile">
+                            <div class="slds-media__figure slds-media__figure_fixed-width slds-align_absolute-center slds-m-left_xx-small">
+                                <div class="slds-welcome-mat__tile-icon-container">
+                                    <span class="slds-icon_container slds-icon-utility-magicwand">
+                                        <lightning:icon iconName="utility:filterList" alternativeText="Doc image" />
+                                        
+                                    </span>
+                                    
+                                </div>
+                            </div>
+                            <div class="slds-media__body slds-border_left slds-p-around_small">
+                                <h3 class="slds-welcome-mat__tile-title">Create File Filters</h3>
+                            </div>
+                        </a>
+                        <a href="javascript:void(0);" onclick="{! c.handleSetActiveSectionD }" class="slds-box slds-box_link slds-box_x-small slds-media slds-welcome-mat__tile">
+                            <div class="slds-media__figure slds-media__figure_fixed-width slds-align_absolute-center slds-m-left_xx-small">
+                                <div class="slds-welcome-mat__tile-icon-container">
+                                    <span class="slds-icon_container slds-icon-utility-knowledge_base">
+                                        <lightning:icon iconName="utility:builder" alternativeText="Doc image" />
+                                        
+                                    </span>
+                                    
+                                </div>
+                            </div>
+                            <div class="slds-media__body slds-border_left slds-p-around_small">
+                                <h3 class="slds-welcome-mat__tile-title">Customize Record Pages</h3>
+                            </div>
+                        </a>
+                         <a href="javascript:void(0);" onclick="{! c.handleSetActiveSectionE }" class="slds-box slds-box_link slds-box_x-small slds-media slds-welcome-mat__tile">
+                            <div class="slds-media__figure slds-media__figure_fixed-width slds-align_absolute-center slds-m-left_xx-small">
+                                <div class="slds-welcome-mat__tile-icon-container">
+                                    <span class="slds-icon_container slds-icon-utility-knowledge_base">
+                                        <lightning:icon iconName="utility:share" alternativeText="Doc image" />
+                                    </span>
+                                    
+                                </div>
+                            </div>
+                            <div class="slds-media__body slds-border_left slds-p-around_small">
+                                <h3 class="slds-welcome-mat__tile-title">Enable External File Sharing</h3>
+                            </div>
+                        </a>
+                        <a href="javascript:void(0);" onclick="{! c.handleSetActiveSectionF }" class="slds-box slds-box_link slds-box_x-small slds-media slds-welcome-mat__tile">
+                            <div class="slds-media__figure slds-media__figure_fixed-width slds-align_absolute-center slds-m-left_xx-small">
+                                <div class="slds-welcome-mat__tile-icon-container">
+                                    <span class="slds-icon_container slds-icon-utility-knowledge_base">
+                                        <lightning:icon iconName="utility:insert_template" alternativeText="Doc image" />
+                                        
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="slds-media__body slds-border_left slds-p-around_small">
+                                <h3 class="slds-welcome-mat__tile-title">
+                                    Enable and Create Templates</h3>
+                            </div>
+                        </a>
+                        
+                       
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+        
+        <aura:set attribute="else">
+            <div class="slds-p-around_medium slds-theme_default slds-setup-assistant">
+                <lightning:card  class="slds-theme_shade" title="Setup Assistant" iconName="standard:maintenance_asset" >
+                    
+                    <p class="slds-p-horizontal_medium">
+                        <lightning:accordion  aura:id="accordion" activeSectionName="{!v.activeSection}">
+                            <lightning:accordionSection class="slds-theme_shade" name="W" label="Thank You For Installing Lightning File Manager">
+                                <p class="slds-p-around_medium slds-theme_default" >
+                                    <p>
+                                      
+                                        <p class="slds-p-bottom_x-small">BEFORE YOU BEGIN:</p>
+                                        
+                                        <p>
+                                            
+                                            <div class="slds-box slds-box_x-small slds-theme_shade slds-m-top_medium slds-m-bottom_medium">
+                                                <div class="slds-media slds-media_responsive">
+                                                    <div class="slds-media__body" style="padding-top:.5rem;padding-bottom:.5rem;">
+                                                        <span class="slds-text-title_caps">Note :</span> 
+                                                        <ul>Before uploading files, make sure the User is added to the specific Library/Folder. Not doing so will result in an error.
+                                              </ul>
+                                                
+                                                </div></div></div>
+                                            
+                                        </p>
+                                        
+                                        <p class="slds-p-bottom_x-small">A few sample folders and tags have been pre-configured for reference.</p>
+                                        
+                                        <p class="slds-p-bottom_x-small">Set these folders to <i>Inactive</i> mode from the <i>Folder Configurations</i> Tab.</p> 
+                                        
+                                        <p class="slds-p-bottom_x-small">Go to the <i><a onclick="{!c.navigatetoGuidedSetup}">Guided Setup</a></i> Tab to create new configurations.</p>
+                                        
+                                        <p class="slds-p-bottom_x-small">Finish all the post installation steps given below.</p>
+                                        
+                                        <p class="slds-p-bottom_x-small">Start Uploading Files!</p>
+                                                                        
+                                        
+                                    </p>
+                                </p>
+                                
+                            </lightning:accordionSection>
+                            <lightning:accordionSection name="A" class="slds-theme_shade" label="{! v.title }">
+                                
+                                <aura:set attribute="body">
+                                    <div class="slds-p-around_medium slds-theme_default">
+                                        
+                                        
+                                        <p class="slds-p-horizontal_medium">
+                                            <lightning:accordion aura:id="accordion" activeSectionName="A">
+                                                <lightning:accordionSection name="A" label="Enable Salesforce CRM content ">
+                                                    <div id="ContentSetup" class="slds-p-around_medium" ><a name="ContentSetup"><!-- --></a><ol>
+                                                        <li>1. From Setup, enter <kbd>Salesforce CRM Content</kbd> in the <samp class="parmname">Quick
+                                                            Find</samp> box, select <strong class="uicontrol">Salesforce CRM Content</strong>, and then select
+                                                            
+                                                            <p> <samp class="parmname">Enable Salesforce CRM Content</samp>.
+                                                            </p>
+                                                            </li>
+                                                        <p><lightning:formattedUrl value="https://help.salesforce.com/articleView?id=content_initialsetup" /></p>
+                                                        
+                                                        <li>2. Give users access to Salesforce CRM Content by assigning feature licenses in one of the
+                                                            following ways: <a name="assign_feature_lic_two_ways"><!-- --></a><ul id="assign_feature_lic_two_ways">
+                                                            <li>To assign feature licenses to users automatically, from Setup, enter <kbd>Salesforce
+                                                                CRM Content</kbd> in the <samp class="parmname">Quick Find</samp> box, select
+                                                                <strong class="uicontrol">Salesforce CRM Content</strong>, and then select <samp class="parmname">Autoassign feature
+                                                                licenses to existing and new users</samp>.</li>
+                                                            
+                                                            <li>3. To assign feature licenses to users manually, from Setup, enter
+                                                                <kbd>Users</kbd> in the <samp class="parmname">Quick Find</samp> box, then select
+                                                                <strong class="uicontrol">Users</strong> and click <strong class="uicontrol">Edit</strong> next to the user's name.
+                                                                Select the <samp class="parmname">Salesforce CRM Content User</samp> checkbox and click
+                                                                <strong class="uicontrol">Save</strong>.</li>
+                                                            
+                                                            </ul>
+                                                        </li>
+                                                        
+                                                        <li>4. Verify that the Salesforce CRM Content users have the Salesforce CRM Content user
+                                                            permissions enabled. The user permissions include Manage Salesforce CRM Content, Create
+                                                            Libraries, Manage Content Permissions, Manage Content Properties, Manage record types and
+                                                            layouts for Files, and Deliver Uploaded Files and Personal Content.
+                                                            
+                                                        </li>
+                                                        <p> Settings below: 
+                                                        </p>
+                                                        <img src="{!$Resource.EnableSalesforceCRMContent}"/>
+                                                        
+                                                        </ol>
+                                                    </div>
+                                                </lightning:accordionSection>
+                                                <lightning:accordionSection name="B" label="Salesforce Files Settings ">
+                                                    <div class="slds-p-around_medium">
+                                                        <p>
+                                                            From Setup, enter <kbd>Salesforce Files Settings</kbd> in the <samp class="parmname">Quick
+                                                            Find</samp> box, select <strong class="uicontrol">Salesforce Files Settings</strong></p>
+                                                        <p> The below settings are recommended:</p>
+                                                        
+                                                        <p>
+                                                            <img src="{!$Resource.SalesforceFilesSettings}"/>
+                                                            
+                                                        </p>
+                                                    </div>
+                                                </lightning:accordionSection>
+                                                <lightning:accordionSection name="C" label="Content Deliveries and Public Links">
+                                                    <div class="slds-p-around_medium">
+                                                        
+                                                        <p><div id="deliver_setup"><a name="deliver_setup"><!-- --></a><ol>
+                                                            <li id="delivery_setup_1"><a name="delivery_setup_1"><!-- --></a><span id="delivery_setup_menucascade"><a name="delivery_setup_menucascade"><!-- --></a>From Setup, enter
+                                                                <kbd>content deliveries and public links</kbd> in the <samp class="parmname">Quick
+                                                                Find</samp> box, and select <strong class="uicontrol">Content Deliveries and Public
+                                                                Links</strong>.</span>
+                                                            </li>
+                                                            
+                                                            <li>Click <strong class="uicontrol">Edit</strong>, and then select <kbd>Content Deliveries feature
+                                                                can be enabled for users,</kbd>
+                                                                <kbd>Public Links can be enabled for users (Requires Content
+                                                                    Deliveries),</kbd> and <kbd>Content Deliveries and Public Links can be
+                                                                enabled to let communities users share files managed by libraries (Requires Content
+                                                                Deliveries)</kbd>.</li>
+                                                            
+                                                            <li id="deliver_setup_2"><a name="deliver_setup_2"><!-- --></a>Choose a default option for content-delivery passwords. Because
+                                                                users can send content-delivery URLs to leads, customers, or any unauthenticated user,
+                                                                Salesforce recommends requiring password protection if your users plan to send
+                                                                confidential documents via content delivery. The options allow you to select an
+                                                                organization-wide default for content-delivery password protection.<ul>
+                                                                <li><strong class="uicontrol">Password protection is optional and defaults to OFF</strong>—If
+                                                                    this option is selected, users can choose to require a password when they create a
+                                                                    content delivery, but the <samp class="parmname">Require Password to Access Content</samp>
+                                                                    field on the create-delivery wizard is not selected by default.</li>
+                                                                
+                                                                <li><strong class="uicontrol">Password protection is optional and defaults to ON</strong>—If
+                                                                    this option is selected, the <samp class="parmname">Require Password to Access Content</samp>
+                                                                    field on the create delivery wizard is selected by default. Users can deselect the
+                                                                    option if they don’t want to require a password.</li>
+                                                                
+                                                                <li><strong class="uicontrol">Password protection is required</strong>—If this option is
+                                                                    selected, a password is generated each time a content delivery is created. Users
+                                                                    cannot opt out of the password requirement.</li>
+                                                                
+                                                                </ul>
+                                                                <div class="slds-box slds-box_x-small slds-theme_shade slds-m-top_medium slds-m-bottom_medium"><div class="slds-media slds-media_responsive"><div class="slds-media__figure"><span class="slds-icon_container slds-icon_container_circle slds-icon-note-note">
+                                                                    </span></div><div class="slds-media__body" style="padding-top:.5rem;padding-bottom:.5rem;"><span class="slds-text-title_caps">Note</span> 
+                                                                    <ul>
+                                                                        <li>If you choose to require a password, users who create a content delivery receive a
+                                                                            password when the delivery is generated; users must send the password and the
+                                                                            delivery URL to delivery recipients. Delivery recipients are prompted for the
+                                                                            password when they click the content delivery URL.</li>
+                                                                        
+                                                                        <li>Content delivery passwords display with the content-delivery URL when the delivery
+                                                                            is created. You can also access the password on the delivery detail page for the
+                                                                            life of the content delivery.</li>
+                                                                        
+                                                                        <li>Files within libraries are governed by settings within the library, so they
+                                                                            require an extra setting, in addition to the user permissions. To let a user share
+                                                                            files managed by a library, enable <strong class="uicontrol">Deliver Content</strong> for that
+                                                                            user in the library.</li>
+                                                                        
+                                                                    </ul>
+                                                                    
+                                                                    </div></div></div>
+                                                            </li>
+                                                            
+                                                            </ol><p>After content delivery is enabled, users can add the Content Deliveries related list to
+                                                            their page layouts for leads, business accounts, contacts, opportunities, cases, campaigns, or
+                                                            custom objects. All Salesforce CRM Content users will see a
+                                                            <strong class="uicontrol">Deliver Content</strong></p></div></p>
+                                                        <p>                        <img src="{!$Resource.ContentDeliveriesandPublicLinks}"/>
+                                                        </p>
+                                                    </div>
+                                                </lightning:accordionSection>
+                                                <lightning:accordionSection name="D" label="Create and Edit Library Permissions">
+                                                    <div class="slds-p-around_medium">
+                                                        
+                                                        <p>Admins MUST switch to the Salesforce Classic UI to Create or Edit library permissions.</p>
+                                                        <p>From Setup, enter "Content Permissions" in the Quick Find box, and then select Content Permissions.
+                                                            <p>To add a new permission, click "Add a Library Permissions". To edit a permission, click "Edit" adjacent to the permission name.</p>                                                            
+                                                            In the Permissions section, select the checkboxes that correspond to the privileges you want to grant to users with this library permission, and click Save.</p>
+                                                        <p>
+                                                            <img src="{!$Resource.CreateandEditLibraryPermissions}"/>
+                                                            
+                                                        </p>
+
+                                                    </div>
+                                                </lightning:accordionSection>
+                                            </lightning:accordion>
+                                        </p>
+                                        
+                                    </div>
+                                    
+                                </aura:set>
+                                
+                            </lightning:accordionSection>
+                            <lightning:accordionSection name="B" class="slds-theme_shade" label="Create Library and Folder System">
+                                <p class="slds-p-around_medium slds-theme_default" >
+                                 <p class="slds-p-bottom_x-small">Go to the <i><a onclick="{!c.navigatetoGuidedSetup}">Guided Setup</a></i> Tab to create</p>
+
+                                    <p>Click <i>New</i> on the left side panel to create a new Library. To add a child folder, click <strong><i>    <lightning:icon  size="xx-small"  iconName="utility:add" alternativeText="add Folder" />
+</i></strong>.</p>
+                                    <p>Click on each folder's name to edit its folder configuration.</p>
+                                    <p> Click <lightning:icon iconName="utility:adduser" size="xx-small" alternativeText="add Folder" /> to add/manage members.</p>    
+                                    </p>
+                            </lightning:accordionSection>
+                            <lightning:accordionSection name="H" class="slds-theme_shade" label="Create Tags">
+                                <p class="slds-p-around_medium slds-theme_default" >
+                                    
+                                    <p>Go to the Tags Tab</p>
+                                    <p>Create tags for any Library/Folder.
+                                        
+                                    </p>
+                                    <p>
+                                        Dependent tag creation is supported, for example, tag category -> tag sub-category. 
+                                    </p>
+                                </p>
+                            </lightning:accordionSection>
+                            <lightning:accordionSection name="G" class="slds-theme_shade" label="Customize File Record Page ">
+                                <p class="slds-p-around_medium slds-theme_default" >
+                                    
+                                    <p>Drag and Drop "Files Tags" on Files Record Page"</p>
+
+
+                                </p>
+                            </lightning:accordionSection>
+                            <lightning:accordionSection name="G" class="slds-theme_shade" label="Add New Files Home to Apps">
+                                <p class="slds-p-around_medium slds-theme_default" >
+                                    
+                                    <p>Add <strong>Files Home </strong>Tab to Apps from App Manager</p>
+
+
+                                </p>
+                            </lightning:accordionSection>
+                            <lightning:accordionSection name="C" class="slds-theme_shade" label="Create Navigation Filters for Files Home">
+                                <p class="slds-p-around_medium slds-theme_default" >
+                                    <p>For easy access later on, create custom filters using the <strong>File Filters</strong> option.</p>
+                                    
+                                    <p>Go to the File Filters Tab</p>
+                                    <p>Click <strong>New</strong> to create a filter.</p>
+                                    
+                                    <p>
+                                        Custom File Filters can be created for both Files Home and any specific Object Record Pages.</p>
+                                </p>
+                                
+                            </lightning:accordionSection>
+                            <lightning:accordionSection name="D" class="slds-theme_shade" label="Create File Tab and Navigation Filters for Object Record Pages Home">
+                                <p class="slds-p-around_medium slds-theme_default" >
+                                    <p class="slds-p-bottom_x-small">Please create a custom Tab on any Record Page</p> 
+                                    <p>Drag and Drop the "Files Home for Record Pages" Component</p>
+                                    <p>Drag and Drop the "File upload Card" Component</p>
+                                    
+                                     <div class="slds-box slds-box_x-small slds-theme_shade slds-m-top_medium slds-m-bottom_medium">
+                                                <div class="slds-media slds-media_responsive">
+                                                    <div class="slds-media__body" style="padding-top:.5rem;padding-bottom:.5rem;">
+                                                        <span class="slds-text-title_caps">Note :</span> 
+                                                <ul> There must be atleast one recordtype for the object for "Files Home for Record Pages".
+                                              </ul>
+                                                
+                                                </div></div></div>
+                                </p>
+                                
+                            </lightning:accordionSection>
+                            <lightning:accordionSection name="E" class="slds-theme_shade" label="Enable/Disable Password Secure File Sharing">
+                                <p class="slds-p-around_medium slds-theme_default" >
+                                    <p class="slds-p-bottom_x-small">By default, Secure sharing is enabled.</p>                                    
+                                    <p class="slds-p-bottom_x-small">To disable this feature, go to:</p>                                        
+                                        <p class="slds-p-bottom_x-small">Setup -> Custom Settings -> LFM Configuration -> Disable <i>Password Sharing</i>.</p> 
+                                         <p class="slds-p-bottom_x-small">If Secure sharing hasn't been disabled, use the Lightning App Builder to drag and drop the <i><strong>Share Files with Password</strong></i> component onto the <strong>File Record Page.</strong></p>
+                                    </p> 
+                            
+                            </lightning:accordionSection>
+                            <lightning:accordionSection name="F" class="slds-theme_shade" label="Enable/Disable Save Tag Template">
+                                <p class="slds-p-around_medium slds-theme_default" >
+                                    <p class="slds-p-bottom_x-small">By default, all users have access privileges to create tag templates.</p>
+                                    <p class="slds-p-bottom_x-small">To disable this feature, go to:
+                                        
+                                        <p class="slds-p-top_x-small">Setup -> Custom Settings -> LFM Configuration -> Disable <i>Enable Template Creation</i>.</p> 
+                                       
+                                    </p> 
+                                </p>
+                            </lightning:accordionSection>
+                            
+                        </lightning:accordion>
+                        
+                        
+                    </p>
+                </lightning:card>
+                
+                
+                
+                
+            </div>
+        </aura:set>
+    </aura:if>
+</aura:component>

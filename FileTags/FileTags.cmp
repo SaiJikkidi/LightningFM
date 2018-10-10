@@ -1,0 +1,57 @@
+<aura:component implements="force:hasRecordId,flexipage:availableForRecordHome" access="global">
+    
+    <aura:attribute name="hasCVId" type="boolean" default="false"/>
+    <aura:attribute name="allTags" type="List" />
+    
+    <!--Content Document attributes -->
+    <aura:attribute name="contentDocument" type="Object" 
+                    description="The record object to be displayed"/>
+    <aura:attribute name="contentDocumentFileds" type="Object"
+                    description="A simplified view record object to be displayed"/>
+    <!--End Content Document attributes -->
+    
+    <!--Content Vesrion attributes -->
+    <aura:attribute name="contentVersion" type="Object" 
+                    description="The record object to be displayed"/>
+    <aura:attribute name="contentVersionFields" type="Object"
+                    description="A simplified view record object to be displayed"/>
+    <aura:attribute name="contentVersionId" type="string" />
+    <!--End Content Vesrion attributes -->
+    
+    
+    <force:recordData aura:id="cdId"
+                      recordId="{!v.recordId}"
+                      fields="LatestPublishedVersionId"
+                      targetRecord="{!v.contentDocument}"
+                      targetFields ="{!v.contentDocumentFileds}"
+                      recordUpdated="{!c.getContentVersion}"
+                      mode="VIEW"/>
+    
+    <aura:if isTrue="{!v.hasCVId}">
+        <force:recordData aura:id="cvId"
+                          fields="TagCsv"
+                          recordId="{!v.contentVersionId}"
+                          targetRecord="{!v.contentVersion}"
+                          targetFields ="{!v.contentVersionFields}"
+                          recordUpdated="{!c.getTags}"
+                          mode="VIEW"/>
+    </aura:if>
+    
+    
+    <lightning:card variant="Narrow" title="File Tags" iconName="standard:quotes" >
+        <p class="slds-border_top">
+            <lightning:layout multipleRows="true">
+                <aura:iteration items="{!v.allTags}" var="tag">
+                    <lightning:layoutItem padding="around-small">
+                        <span class="slds-pill slds-pill_link">
+                            <a href="javascript:void(0);" class="slds-pill__action">
+                                <span class="slds-pill__label slds-p-left_medium">{!tag}</span>
+                            </a>
+                        </span>
+                    </lightning:layoutItem>
+                </aura:iteration>
+            </lightning:layout>
+        </p>
+    </lightning:card>
+    
+</aura:component>

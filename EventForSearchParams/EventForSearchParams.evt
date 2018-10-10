@@ -1,0 +1,14 @@
+<aura:event type="APPLICATION" description="Event template" >
+    
+    <aura:attribute name="Searchmode" type="String" default="Filter"/>
+    
+    <aura:attribute name="navMenuID" type="String"/>
+    
+    <aura:attribute name="relatedRecordIds" type="String"/>
+    
+    <aura:attribute name="tagsCommaSepStr" type="String"/>
+    
+    <aura:attribute name="allConfig" type="String"/>
+    
+    
+</aura:event>

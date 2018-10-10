@@ -1,0 +1,396 @@
+<aura:component controller="FolderCreationAndConfigurationController" implements="force:appHostable,flexipage:availableForAllPageTypes" access="global">
+    <aura:handler name="init" value="{!this}" action="{!c.doint}"/>
+    <aura:attribute name="isOpen" type="boolean" default="false"/>
+    <aura:attribute name="isOpenLibrary" type="boolean" default="false"/>
+    <aura:attribute name="selectedLibrary" type="String"/>
+    <aura:attribute name="initialObjectsSelected" type="Object_Configuration__c[]"/>
+    <aura:attribute name="initialTagsSelected" type="Tag_Configuration__c[]"/>
+    <aura:attribute name="dualPickListvalues" type="List" default="[]"/>
+    
+    <!-- Navigation to folders members attributes-->
+    <aura:attribute name="url" type="String"/>
+    <aura:attribute name="pageReference" type="Object"/>
+    
+    <lightning:navigation aura:id="navService"/>
+    <!-- Navigation to folders members attributes-->
+    
+    <!-- Tags Picklist -->
+    <aura:attribute name="tagsPickList" type="List" />
+    <aura:attribute name="dualTagsPickListvalues" type="List" default="[]"/>
+    <aura:attribute name="selectedTags" type="List" />
+    <!-- End of Tags Picklist -->
+    
+    <aura:attribute name="isSelected" type="boolean" default="false"/>
+    <aura:attribute name="isInitiated" type="boolean" default="true"/>
+    
+    <aura:attribute name="folderName" type="String"/>
+    <aura:attribute name="libraryName" type="String"/>
+    <aura:attribute name="folderPath" type="String"/>
+    <aura:attribute name="folderParentId" type="String"/>
+    <aura:attribute name="workSpaceId" type="String" />    
+    
+    <!-- Naviation Attributes -->
+    <aura:attribute name="items" type="Object" description="The list of sections and their items." />
+    <aura:attribute name="initiallySelected" type="String" description="The name of the initially selected item." />
+    <aura:attribute name="NavItemSelected1" type="String" description="The name of the initially selected item." />
+    <!-- End of Navigation Attributes -->
+    
+    <aura:attribute name="currentStep" type="string" default="1"/>
+    <aura:attribute name="options" type="List" />
+    <aura:attribute name="checkboxOptions" type="List" />
+    <aura:attribute name="selectedObjects" type="List" />
+    <aura:attribute name="requiredObjectsValue" type="List" />
+    <aura:attribute name="requiredTagsValue" type="List" />
+    
+    <aura:attribute name="reguiredTags" type="List"/>
+    
+    <aura:attribute name="folderTagsConfigurations" type="Tag_Configuration__c[]" />
+    <aura:attribute name="objectConfigurations" type="Object_Configuration__c[]"/>
+    
+    <aura:attribute name="disabled" type="Boolean" default="false" />
+    
+    <div class="slds-box slds-theme_default">    
+        <!-- PAGE HEADER -->
+        <lightning:layout  class="slds-page-header--object-home slds-page-header_joined slds-page-header_bleed slds-page-header slds-shrink-none test-headerRegion forceListViewManagerHeader" multipleRows="true">
+            <lightning:layoutItem >
+                <lightning:icon iconName="custom:custom108" alternativeText="Custom Setup"/>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="4" largeDeviceSize="3" padding="around-small">
+                <h2 class="slds-text-heading--medium">
+                    <span class="icon-container" >Guided Setup</span>
+                    
+                </h2>
+            </lightning:layoutItem>
+        </lightning:layout>
+        <!-- END OF PAGE HEADER -->
+        
+        <p class="slds-border_top">
+            
+            <lightning:layout multipleRows="true">
+                <lightning:layoutItem padding="around-small" size="12">
+                    
+                    <lightning:layout>
+                        <lightning:layoutItem padding="around-small" size="3">
+                            <lightning:card variant="Narrow" title="Library and Folder" iconName="doctype:library_folder" >
+                                <aura:set attribute="actions">
+                                    <lightning:button variant="brand" label="New" name="New Library" onclick="{!c.openLibraryModel}"/>
+                                </aura:set>
+                                <p class="slds-border_top">
+                                    <ui:scrollerWrapper class="scrollerSize">
+                                        
+                                        <lightning:layoutItem class="slds-theme_default" padding="around-small">
+                                            <lightning:verticalNavigation selectedItem="{! v.initiallySelected }"
+                                                                          onselect="{! c.folderSelected }"
+                                                                          class="navigation"
+                                                                          compact="true">
+                                                
+                                                <aura:iteration items="{! v.items }" var="section">
+                                                    
+                                                    <div class="slds-nav-vertical__section">
+                                                        <lightning:layout multipleRows="true">
+                                                            <lightning:layoutItem >
+                                                                <lightning:verticalNavigationItemIcon class="slds-text-title_caps"
+                                                                                                      label="{! section.label }"
+                                                                                                      name="{! section.name }"
+                                                                                                      iconName="{!section.iconName}" />
+                                                            </lightning:layoutItem>
+                                                            <lightning:layoutItem >
+                                                                <lightning:buttonIcon  title="Add Folder"  size="small" name="{!section.name}" aura:id="createFolder" iconName="utility:add" variant="bare" value="{! section.label+'\\' }" onclick="{! c.openModel }" alternativeText="Create Folder" />
+                                                                <lightning:buttonIcon title="View and Manage Members" iconName="utility:adduser" variant="bare" aura:id="redirectFolder" onclick="{! c.navigateFolder }" value="{!section.contentfolderid}"  alternativeText="addusers" />
+                                                                <!--  <a href="{!v.url}" id="{!section.contentfolderid}"  onclick="{!c.navigateFolder}" target="_blank" >Link12</a> -->
+                                                                
+                                                            </lightning:layoutItem>
+                                                        </lightning:layout>
+                                                        
+                                                        <aura:iteration items="{! section.items }" var="item">
+                                                            <lightning:layout multipleRows="true">
+                                                                <lightning:layoutItem class="slds-m-left_large">
+                                                                    <lightning:verticalNavigationItemIcon
+                                                                                                          label="{! item.label }"
+                                                                                                          name="{!item.name}"
+                                                                                                          iconName="{!item.iconName}"/>
+                                                                </lightning:layoutItem>
+                                                                <lightning:layoutItem >
+                                                                    <lightning:buttonIcon title="Add Folder"  size="small" aura:id="createFolder" name="{!item.name}" iconName="utility:add" variant="bare" value="{! section.label+'\\' +item.label+'\\' }" onclick="{! c.openModel }" alternativeText="Create Folder" />
+                                                                    <lightning:buttonIcon title="View and Manage Members" iconName="utility:adduser" variant="bare" onclick="{! c.navigateFolder }" value="{!item.contentfolderid}" alternativeText="addusers" />
+                                                                    
+                                                                </lightning:layoutItem>
+                                                            </lightning:layout>
+                                                            
+                                                            <aura:iteration items="{! item.items }" var="item2">
+                                                                <lightning:layout multipleRows="true">
+                                                                    <lightning:layoutItem class="slds-p-left_xx-large">
+                                                                        <lightning:verticalNavigationItemIcon 
+                                                                                                              label="{! item2.label }"
+                                                                                                              name="{! item2.name }"
+                                                                                                              iconName="{!item2.iconName}" /> 
+                                                                    </lightning:layoutItem>
+                                                                    
+                                                                    <lightning:layoutItem >
+                                                                        <lightning:buttonIcon title="View and Manage Members"  iconName="utility:adduser" value="{!item2.contentfolderid}" variant="bare" onclick="{! c.navigateFolder }" alternativeText="addusers" />
+                                                                    </lightning:layoutItem>
+                                                                </lightning:layout>
+                                                            </aura:iteration>
+                                                            
+                                                        </aura:iteration>  
+                                                    </div>
+                                                </aura:iteration>
+                                            </lightning:verticalNavigation>
+                                        </lightning:layoutItem>
+                                    </ui:scrollerWrapper>
+                                    
+                                </p>
+                            </lightning:card>
+                            
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="9">
+                            
+                            <aura:if isTrue ="{!v.isInitiated}" >
+                                <div class="slds-p-around--x-large" aria-live="polite">
+                                    <h3 class="slds-text-heading--large slds-text-align--center slds-p-bottom--small">
+                                        <span class="icon-container" ></span>
+                                        Please Create a Library/Folder or Select a Folder to start                                              </h3>
+                                    <div class="slds-text-body--regular slds-text-align--center">
+                                        Select any folder to add or edit folder configurations                                               </div>
+                                </div>
+                            </aura:if>
+                            
+                            <aura:if isTrue="{!v.isSelected}">   
+                                <div class="slds-box slds-theme_default">
+                                    
+                                    <lightning:progressIndicator currentStep="{!v.currentStep}" type="path">
+                                        <lightning:progressStep label="Objects" value="1" onclick="{!c.selectFromHeaderStep1}"/>
+                                        <lightning:progressStep label="Required Objects" value="2" onclick="{!c.selectFromHeaderStep2}"/>
+                                        <lightning:progressStep label="Type of Tags" value="3" onclick="{!c.selectFromHeaderStep3}"/>
+                                        <lightning:progressStep label="Required Tags" value="4" onclick="{!c.selectFromHeaderStep4}"/>
+                                        
+                                    </lightning:progressIndicator>
+                                    <lightning:layout verticalAlign="center" horizontalAlign="space" class="x-large">
+                                        <lightning:layoutItem flexibility="auto" padding="around-small">
+                                            <div class="{!v.currentStep == '1' ? 'slds-show' : 'slds-hide'}" >
+                                                
+                                                <div class="slds-p-around--x-large" aria-live="polite">
+                                                    <h3 class="slds-text-heading--large slds-text-align--center slds-p-bottom--small">
+                                                        <span class="icon-container" ></span>
+                                                        Choose Objects
+                                                    </h3>
+                                                    <div class="slds-text-body--regular slds-text-align--center">
+                                                        For the selected folder, choose all the Objects to which the users can upload files.
+                                                    </div>
+                                                </div>
+                                                <lightning:dualListbox aura:id="dialPickList"
+                                                                       name="Objects"  
+                                                                       label= "Objects" 
+                                                                       sourceLabel="Available" 
+                                                                       selectedLabel="Selected" 
+                                                                       fieldLevelHelp="Select Objects" 
+                                                                       options="{!v.options}"
+                                                                       value="{!v.dualPickListvalues}"
+                                                                       onchange="{! c.handleChange }"/>
+                                            </div>
+                                            
+                                            <div class="{!v.currentStep == '2' ? 'slds-show' : 'slds-hide'}" >
+                                                
+                                                <div class="slds-p-around--x-large" aria-live="polite">
+                                                    <h3 class="slds-text-heading--large slds-text-align--center slds-p-bottom--small">
+                                                        <span class="icon-container" ></span>
+                                                        Objects
+                                                    </h3>
+                                                    <div class="slds-text-body--regular slds-text-align--center">
+                                                        Please select objects that are required. Also, provide a field API Name to uniquely identify each individual record.                                                    </div>
+                                                </div>
+                                                
+                                                <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                                    <thead>
+                                                        <tr class="slds-text-title_caps">
+                                                            <th scope="col">
+                                                                <div class="slds-truncate" title="Objects">Objects</div>
+                                                            </th>
+                                                            <th scope="col">
+                                                                <div class="slds-truncate" title="Field Name">Field API Name</div>
+                                                            </th> 
+                                                            <th scope="col">
+                                                                <div class="slds-truncate" title="Required">Required</div>
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <aura:iteration items="{!v.objectConfigurations}" var="item" indexVar="index">
+                                                            <tr>
+                                                                <th scope="row" data-label="Object Name">
+                                                                    <div class="slds-truncate" >
+                                                                        <ui:outputText value="{!item.Name}"/>
+                                                                    </div>
+                                                                </th>
+                                                                
+                                                                <td >
+                                                                    <div class="slds-truncate" >
+                                                                        
+                                                                        <lightning:input class="slds-p-bottom_medium" required="true" name="{!item.PA_LFM__Field_to_Display__c}" value="{!item.PA_LFM__Field_to_Display__c}" />
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="slds-truncate" >
+                                                                        
+                                                                        <lightning:input aura:id="objectform" type="toggle"  messageToggleActive="" messageToggleInactive="" checked="{!item.PA_LFM__Required__c}"/>
+                                                                    </div>
+                                                                </td>
+                                                                
+                                                            </tr>
+                                                        </aura:iteration>
+                                                    </tbody>
+                                                    
+                                                </table>
+                                                
+                                            </div>
+                                            <div class="{!v.currentStep == '3' ? 'slds-show' : 'slds-hide'}"  >
+                                                
+                                                <div class="slds-p-around--x-large" aria-live="polite">
+                                                    <h3 class="slds-text-heading--large slds-text-align--center slds-p-bottom--small">
+                                                        <span class="icon-container" ></span>
+                                                        Choose Type of Tags 
+                                                    </h3>
+                                                    <div class="slds-text-body--regular slds-text-align--center">
+                                                        Classify files based on Tag Type
+                                                    </div>
+                                                </div>
+                                                
+                                                <lightning:dualListbox aura:id="tagsPickList"
+                                                                       name="Tags"  
+                                                                       label= "Tags" 
+                                                                       sourceLabel="Available" 
+                                                                       selectedLabel="Selected" 
+                                                                       fieldLevelHelp="Select Tags" 
+                                                                       options="{!v.tagsPickList}"
+                                                                       value="{!v.dualTagsPickListvalues}"
+                                                                       onchange="{! c.selectedTags}"/>
+                                            </div>
+                                            
+                                            
+                                            <div class="{!v.currentStep == '4' ? 'slds-show' : 'slds-hide'}">
+                                                <div class="slds-p-around--x-large" aria-live="polite">
+                                                    <h3 class="slds-text-heading--large slds-text-align--center slds-p-bottom--small">
+                                                        <span class="icon-container" ></span>
+                                                        Required Tags
+                                                    </h3>
+                                                    <div class="slds-text-body--regular slds-text-align--center">
+                                                        Among selected tags, choose tags that are required.
+                                                    </div>
+                                                </div>
+                                                <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                                    <thead>
+                                                        <tr class="slds-text-title_caps">
+                                                            <th scope="col">
+                                                                <div class="slds-truncate" title="Tags">Tags</div>
+                                                            </th>
+                                                            <th scope="col">
+                                                                <div class="slds-truncate" title="Required">Required</div>
+                                                            </th>
+                                                            
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <aura:iteration items="{!v.folderTagsConfigurations}" var="tags">
+                                                            <tr>
+                                                                <th scope="row" data-label="Object Name">
+                                                                    <ui:outputText value="{!tags.PA_LFM__Tag__c}"/>
+                                                                </th>
+                                                                <td>
+                                                                    <lightning:input aura:id="objectform" type="toggle"  messageToggleActive="" messageToggleInactive="" checked="{!tags.PA_LFM__Required__c}"/>
+                                                                </td>
+                                                            </tr>
+                                                        </aura:iteration>
+                                                    </tbody>
+                                                </table>                                               
+                                            </div>
+                                            
+                                        </lightning:layoutItem>
+                                    </lightning:layout>
+                                </div>
+                            </aura:if>
+                            
+                            <div class="slds-m-top_medium slds-align_absolute-center">
+                                <aura:if isTrue="{!v.isSelected}">   
+                                    <lightning:button disabled="{!v.currentStep != '1' ? '' : 'disabled'}"  onclick="{!c.moveBack}" name="Back" label="Back" />
+                                    <aura:if isTrue="{!v.currentStep != '4'}">
+                                        <lightning:button  variant="brand" onclick="{!c.moveNext}" name="Next" label="Next" />
+                                    </aura:if>
+                                    <aura:if isTrue="{!v.currentStep == '4'}">   
+                                        <lightning:button onclick="{!c.confirmAndSave}"  variant="brand" name="Save" label="Save" />
+                                    </aura:if>
+                                </aura:if>
+                            </div>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </lightning:layoutItem>
+            </lightning:layout>
+            
+        </p>
+        
+        <!-- Model Box for selecting Folder -->
+        <aura:if isTrue="{!v.isOpen}">
+            
+            <!--###### MODAL BOX Start From Here ######--> 
+            <div role="dialog" tabindex="-1" aria-labelledby="header99" class="slds-modal slds-fade-in-open ">
+                <div class="slds-modal__container">
+                    <!-- ###### MODAL BOX HEADER Part Start From Here ######-->
+                    <div class="slds-modal__header">
+                        <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" onclick="{!c.closeModel}">
+                            X
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="header99" class="slds-text-heading--medium">{!v.folderPath}{!v.folderName}</h2>
+                    </div>
+                    <!--###### MODAL BOX BODY Part Start From Here ######-->
+                    <div class="slds-modal__content slds-p-around--medium">
+                        <p>
+                            <lightning:input required="true" aura:id="Folder" label="Folder Name" value="{!v.folderName}" name="Folder Name"/>
+                        </p>
+                    </div>
+                    <!--###### MODAL BOX FOOTER Part Start From Here ######-->
+                    <div class="slds-modal__footer">
+                        <button class="slds-button slds-button--neutral" onclick="{!c.closeModel}" >Cancel</button>
+                        <button class="slds-button slds-button--brand" onclick="{!c.saveFolder}">Save</button>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>
+            <!--###### MODAL BOX Part END Here ######-->
+            
+        </aura:if>
+        <!--End  Model Box for Folder -->
+        
+        <!-- Model Box for Library -->
+        <aura:if isTrue="{!v.isOpenLibrary}">
+            
+            <!--###### MODAL BOX Start From Here ######--> 
+            <div role="dialog" tabindex="-1" aria-labelledby="header99" class="slds-modal slds-fade-in-open ">
+                <div class="slds-modal__container">
+                    <!-- ###### MODAL BOX HEADER Part Start From Here ######-->
+                    <div class="slds-modal__header">
+                        <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" onclick="{!c.closeModel}">
+                            X
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="header99" class="slds-text-heading--medium">New Library</h2>
+                    </div>
+                    <!--###### MODAL BOX BODY Part Start From Here ######-->
+                    <div class="slds-modal__content slds-p-around--medium">
+                        <p>
+                            <lightning:input required="true" aura:id="Library" label="Library Name" value="{!v.libraryName}" name="Library Name"/>
+                        </p>
+                    </div>
+                    <!--###### MODAL BOX FOOTER Part Start From Here ######-->
+                    <div class="slds-modal__footer">
+                        <button class="slds-button slds-button--neutral" onclick="{!c.closeModel}" >Cancel</button>
+                        <button class="slds-button slds-button--brand" onclick="{!c.saveLibrary}">Save</button>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>
+            <!--###### MODAL BOX Part END Here ######-->
+            
+        </aura:if>
+
+    </div>
+</aura:component>

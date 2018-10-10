@@ -1,0 +1,9 @@
+<aura:event type="APPLICATION"  description="This event is responsible passing data from template selection">
+    <aura:attribute name="treeConfigSelectedU" type="sObject" />
+    <aura:attribute name="tressTagSelectedU" type="sObject[]" />
+    <aura:attribute name="treesRecordSelecttedU" type="sObject[]" />
+    <aura:attribute name="treeConfigSelectedS" type="sObject" />
+    <aura:attribute name="tressTagSelectedS" type="sObject[]" />
+    <aura:attribute name="treesRecordSelecttedS" type="sObject[]" />
+    
+</aura:event>

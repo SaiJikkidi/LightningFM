@@ -1,0 +1,51 @@
+<aura:component controller='ClassifyFile'>
+    <aura:attribute name="SelectedRecordTemplate" type="Object" />
+    <aura:attribute name="oRecord" type="Object" />
+    <aura:attribute name="IconName" type="string" />
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    <lightning:layoutItem >
+        
+        <li role="presentation" class="slds-listbox__item" >
+            
+            <span id="listbox-option-unique-id-01" class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_plain slds-listbox__option_has-meta" role="option">
+                
+                <span class="slds-media__body">
+                    
+                    <ul  class="slds-has-dividers_around-space">
+                        <li class="slds-item">
+                            <article class="slds-tile slds-tile_board">
+                                
+                                <h3 class="slds-tile__title slds-truncate" title="{!v.oRecord.template.Name}"><a href="javascript:void(0);" onclick="{!c.selectRecord}">{!v.oRecord.template.Name}</a></h3>
+                                
+                                <div class="slds-tile__detail">
+                                    <p class="slds-text-heading_small">{!v.oRecord.folder.Name}</p>
+                                    
+                                    
+                                    <aura:iteration items="{!v.oRecord.records}" var="record">
+                                        <p class="slds-truncate" title="{!record.objname}">{!record.Name}</p>
+                                    </aura:iteration>
+                                    
+                                    <aura:iteration items="{!v.oRecord.tags}" var="tag">
+                                        <p class="slds-truncate slds-has-alert" title="{!tag.Name}">
+                                            {!tag.Name}
+                                        </p>
+                                    </aura:iteration>
+                                    
+                                    <span class="slds-icon_container slds-tile_board__icon" title="description of icon when needed">
+                                        <lightning:buttonIconStateful title="Make as My Favorite Tag Template" value="{!v.oRecord.template.PA_LFM__Is_favorite__c}" iconName="utility:favorite" size="x-small" selected="{!v.oRecord.template.PA_LFM__Is_favorite__c}" onclick="{! c.tempSave }" alternativeText="Make as My Favorite Tag Template" />
+                                        
+                                        <span class="slds-assistive-text">favorites Icon</span>
+                                    </span>
+                                </div>
+                            </article>
+                        </li>
+                    </ul>
+                </span>
+                <div class="slds-align_absolute-center slds-p-left_x-small">
+                    <lightning:buttonIcon iconName="utility:insert_template"  size="large" onclick="{!c.selectRecord}" class="slds-float_right"   variant="bare" alternativeText="Apply Tag Template" title="Apply Tag Template" />
+                    
+                </div>
+            </span>
+        </li>
+    </lightning:layoutItem>
+</aura:component>
